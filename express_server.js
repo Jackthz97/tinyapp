@@ -1,7 +1,9 @@
 const express  = require("express");
+const bodyParser = require("body-parser");
 const app = express();
 const PORT = 8080; // default port
 
+app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
 app.listen(PORT, () => {
@@ -13,20 +15,23 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-// GET method route
+// Route to the home page
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
+// Route to My URLs page
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
 
+// Route to the forms page
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
+// Route to the render information of a single URL in short URL form (key id)
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = { shortURL: req.params.shortURL, longURL: req.params.longURL};
   res.render("urls_show", templateVars);
