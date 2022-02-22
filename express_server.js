@@ -54,7 +54,7 @@ const generateRandomString = () => {
   const string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
   const arr = [];
   for (let i = 0; i < 6; i++) {
-    arr.push(string[Math.floor(Math.random() * 63)]);
+    arr.push(string[Math.floor(Math.random() * 62)]);
   }
   return arr.join("");
 };
