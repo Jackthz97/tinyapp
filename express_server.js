@@ -28,7 +28,10 @@ app.get("/urls", (req, res) => {
 
 app.post("/urls", (req, res) => {
   console.log(req.body);  // Log the POST request body to the console
-  res.send(generateRandomString());         // Respond with 'Ok' (we will replace this)
+  const shortURL = generateRandomString();
+  urlDatabase[shortURL] = req.body.longURL;
+  console.log(urlDatabase);
+  res.redirect(`/urls/${shortURL}`);
 });
 
 // Route to the forms page
@@ -38,7 +41,7 @@ app.get("/urls/new", (req, res) => {
 
 // Route to the render information of a single URL in short URL form (key id)
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: req.params.longURL};
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]};
   res.render("urls_show", templateVars);
 });
 
