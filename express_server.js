@@ -28,7 +28,7 @@ app.get("/urls", (req, res) => {
 
 app.post("/urls", (req, res) => {
   console.log(req.body);  // Log the POST request body to the console
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  res.send(generateRandomString());         // Respond with 'Ok' (we will replace this)
 });
 
 // Route to the forms page
@@ -51,5 +51,10 @@ app.get("/hello", (req, res) => {
 });
 
 const generateRandomString = () => {
-
+  const string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+  const arr = [];
+  for (let i = 0; i < 6; i++) {
+    arr.push(string[Math.floor(Math.random() * 63)]);
+  }
+  return arr.join("");
 };
