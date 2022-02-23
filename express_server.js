@@ -31,6 +31,15 @@ const users = {
   }
 };
 
+const checkEmail = function(email, userData) {
+  for (let userId in userData) {
+    if (email === userData[userId].email) {
+      return false;
+    }
+  }
+  return email;
+};
+
 // Random string generator
 const generateRandomString = () => {
   const string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -85,6 +94,11 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
+// Error page when registering a email that is already in user database
+// app.get("*", (req, res) => {
+//   res.status(400).send("<h1>400</h1>");
+// });
+
 app.post("/urls", (req, res) => {
   console.log(req.body);  // Log the POST request body to the console
   const shortURL = generateRandomString();
@@ -113,9 +127,13 @@ app.post("/registration", (req, res) => {
   const userEmail = templateVars.email;
   const userPassword = templateVars.password;
   const user = {id: userID, email: userEmail, password: userPassword};
-  users[userID] = user;
-  console.log(users);
-  if (req.body) {
+  if (userEmail === "" || userPassword === "") {
+    res.status(400).send("<h1>400</h1><h2>Please enter username or password</h2>");
+  } else if (!checkEmail(userEmail, users)) {
+    res.status(400).send("<h1>400</h1><h2>Email already registered</h2>");
+  } else {
+    users[userID] = user;
+    console.log(users);
     res.cookie('user_id', userID);
     res.redirect("/urls");
   }
