@@ -12,8 +12,8 @@ app.listen(PORT, () => {
 });
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": "www.lighthouselabs.ca",
+  "9sm5xK": "www.google.com"
 };
 
 // Route to the home page
@@ -35,14 +35,16 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
+// Deletes the links and redirect to /urls page
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
 });
 
 app.post("/urls/:id", (req, res) => {
-  const shortURLs = req.params.shortURL;
-  res.redirect(`/urls/${shortURLs}`);
+  const templateVars = req.body;
+  urlDatabase[req.params.id] = templateVars.longURL;
+  res.redirect(`/urls/${req.params.id}`);
 });
 
 // Route to the forms page
@@ -53,6 +55,7 @@ app.get("/urls/new", (req, res) => {
 // Route to the render information of a single URL in short URL form (key id)
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]};
+  console.log(templateVars.longURL);
   res.render("urls_show", templateVars);
 });
 
