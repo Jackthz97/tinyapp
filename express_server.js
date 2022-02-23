@@ -18,41 +18,15 @@ const urlDatabase = {
   "9sm5xK": "www.google.com"
 };
 
-app.post("/urls", (req, res) => {
-  console.log(req.body);  // Log the POST request body to the console
-  const shortURL = generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL;
-  console.log(urlDatabase);
-  res.redirect(`/urls/${shortURL}`);
-});
-
-// Deletes the links and redirect to /urls page
-app.post("/urls/:shortURL/delete", (req, res) => {
-  delete urlDatabase[req.params.shortURL];
-  res.redirect("/urls");
-});
-
-// Updates the long URL edited by the client
-app.post("/urls/:id", (req, res) => {
-  const templateVars = req.body;
-  urlDatabase[req.params.id] = templateVars.longURL;
-  res.redirect(`/urls/${req.params.id}`);
-});
-
-// Endpoint to handle a POST to /login
-// Stores the client's username in the cookie
-app.post("/login", (req, res) => {
-  let loginId = Object.values(req.body).join("");
-  res.cookie('username', loginId);
-  console.log(loginId);
-  res.redirect(`/urls`);
-});
-
-// Endpoint to handle logout
-app.post("/logout", (req, res) => {
-  res.clearCookie("username");
-  res.redirect("/urls");
-});
+// Random string generator
+const generateRandomString = () => {
+  const string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+  const arr = [];
+  for (let i = 0; i < 6; i++) {
+    arr.push(string[Math.floor(Math.random() * 62)]);
+  }
+  return arr.join("");
+};
 
 // Route to the home page
 app.get("/", (req, res) => {
@@ -71,6 +45,10 @@ app.get("/urls/new", (req, res) => {
     username: req.cookies["username"],
   };
   res.render("urls_new", templateVars);
+});
+
+app.get("/registration", (req, res) => {
+  res.render("urls_registration");
 });
 
 app.get("/urls.json", (req, res) => {
@@ -95,13 +73,42 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(`http://${longURL}`);
 });
 
+app.post("/urls", (req, res) => {
+  console.log(req.body);  // Log the POST request body to the console
+  const shortURL = generateRandomString();
+  urlDatabase[shortURL] = req.body.longURL;
+  console.log(urlDatabase);
+  res.redirect(`/urls/${shortURL}`);
+});
 
-// Random string generator
-const generateRandomString = () => {
-  const string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-  const arr = [];
-  for (let i = 0; i < 6; i++) {
-    arr.push(string[Math.floor(Math.random() * 62)]);
-  }
-  return arr.join("");
-};
+// Deletes the links and redirect to /urls page
+app.post("/urls/:shortURL/delete", (req, res) => {
+  delete urlDatabase[req.params.shortURL];
+  res.redirect("/urls");
+});
+
+// Updates the long URL edited by the client
+app.post("/urls/:id", (req, res) => {
+  const templateVars = req.body;
+  urlDatabase[req.params.id] = templateVars.longURL;
+  res.redirect(`/urls/${req.params.id}`);
+});
+
+app.post("/registration", (req, res) => {
+
+});
+
+// Endpoint to handle a POST to /login
+// Stores the client's username in the cookie
+app.post("/login", (req, res) => {
+  let loginId = Object.values(req.body).join("");
+  res.cookie('username', loginId);
+  console.log(loginId);
+  res.redirect(`/urls`);
+});
+
+// Endpoint to handle logout
+app.post("/logout", (req, res) => {
+  res.clearCookie("username");
+  res.redirect("/urls");
+});
