@@ -18,6 +18,19 @@ const urlDatabase = {
   "9sm5xK": "www.google.com"
 };
 
+const users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+  "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  }
+};
+
 // Random string generator
 const generateRandomString = () => {
   const string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -35,20 +48,32 @@ app.get("/", (req, res) => {
 
 // Route to My URLs page
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  const templateVars = { urls: urlDatabase, user: req.cookies["user_id"], users };
   res.render("urls_index", templateVars);
 });
 
 // Route to the forms page
 app.get("/urls/new", (req, res) => {
-  const templateVars = {
-    username: req.cookies["username"],
-  };
+  const templateVars = { user: req.cookies["user_id"], users };
   res.render("urls_new", templateVars);
 });
 
 app.get("/registration", (req, res) => {
-  res.render("urls_registration");
+  const templateVars = { user: req.cookies["user_id"], users};
+  res.render("urls_registration", templateVars);
+});
+
+// Route to the render information of a single URL in short URL form (key id)
+app.get("/urls/:shortURL", (req, res) => {
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: req.cookies["user_id"], users};
+  console.log(templateVars.longURL);
+  res.render("urls_show", templateVars);
+});
+
+// Access the website of the long URL
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL];
+  res.redirect(`http://${longURL}`);
 });
 
 app.get("/urls.json", (req, res) => {
@@ -58,19 +83,6 @@ app.get("/urls.json", (req, res) => {
 // Hello page
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
-
-// Route to the render information of a single URL in short URL form (key id)
-app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: req.cookies["username"]};
-  console.log(templateVars.longURL);
-  res.render("urls_show", templateVars);
-});
-
-// Access the website of the long URL
-app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
-  res.redirect(`http://${longURL}`);
 });
 
 app.post("/urls", (req, res) => {
@@ -94,8 +106,19 @@ app.post("/urls/:id", (req, res) => {
   res.redirect(`/urls/${req.params.id}`);
 });
 
+// Endpoint to handle the registration form data
 app.post("/registration", (req, res) => {
-
+  const templateVars = req.body;
+  const userID = generateRandomString();
+  const userEmail = templateVars.email;
+  const userPassword = templateVars.password;
+  const user = {id: userID, email: userEmail, password: userPassword};
+  users[userID] = user;
+  console.log(users);
+  if (req.body) {
+    res.cookie('user_id', userID);
+    res.redirect("/urls");
+  }
 });
 
 // Endpoint to handle a POST to /login
@@ -109,6 +132,6 @@ app.post("/login", (req, res) => {
 
 // Endpoint to handle logout
 app.post("/logout", (req, res) => {
-  res.clearCookie("username");
+  res.clearCookie("user_id");
   res.redirect("/urls");
 });
