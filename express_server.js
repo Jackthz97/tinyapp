@@ -72,6 +72,11 @@ app.get("/registration", (req, res) => {
   res.render("urls_registration", templateVars);
 });
 
+app.get("/login", (req, res) => {
+  const templateVars = { user: req.cookies["user_id"], users};
+  res.render("login" ,templateVars);
+});
+
 // Route to the render information of a single URL in short URL form (key id)
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: req.cookies["user_id"], users};
