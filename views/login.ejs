@@ -16,7 +16,13 @@
 
     <main style="margin: 1em;">
       <div style="text-align: center;">
+        <%if (user) {%>
+          <p>You are already logged in</p>
+          <p>Please Logout first before signing in</p>
+        <% } %>
+        <%if (!user) {%>
         <h1 style="margin: 25px; color: red;">Loggin</h1>
+        <% } %>
       <form method="POST" action="/login">
         <input type="email" name="email" placeholder="Username">
         <input type="password" name="password" placeholder="Password">
