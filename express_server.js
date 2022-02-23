@@ -48,6 +48,12 @@ app.post("/login", (req, res) => {
   res.redirect(`/urls`);
 });
 
+// Endpoint to handle logout
+app.post("/logout", (req, res) => {
+  res.clearCookie("username");
+  res.redirect("/urls");
+});
+
 // Route to the home page
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -55,13 +61,16 @@ app.get("/", (req, res) => {
 
 // Route to My URLs page
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase };
+  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
   res.render("urls_index", templateVars);
 });
 
 // Route to the forms page
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  const templateVars = {
+    username: req.cookies["username"],
+  };
+  res.render("urls_new", templateVars);
 });
 
 app.get("/urls.json", (req, res) => {
@@ -75,7 +84,7 @@ app.get("/hello", (req, res) => {
 
 // Route to the render information of a single URL in short URL form (key id)
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]};
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: req.cookies["username"]};
   console.log(templateVars.longURL);
   res.render("urls_show", templateVars);
 });
@@ -85,6 +94,7 @@ app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
   res.redirect(`http://${longURL}`);
 });
+
 
 // Random string generator
 const generateRandomString = () => {
