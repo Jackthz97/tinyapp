@@ -31,13 +31,21 @@ const users = {
   }
 };
 
-const checkEmail = function(email, userData) {
+const checkUser = function(email, userData, key) {
   for (let userId in userData) {
-    if (email === userData[userId].email) {
+    if (email === userData[userId][key]) {
       return false;
     }
   }
-  return email;
+  return true;
+};
+
+const checkId = function(email, userData)  {
+  for (let id in userData) {
+    if (email === userData[id].email) {
+      return id;
+    }
+  }
 };
 
 // Random string generator
@@ -128,18 +136,18 @@ app.post("/urls/:id", (req, res) => {
 // Endpoint to handle the registration form data
 app.post("/registration", (req, res) => {
   const templateVars = req.body;
-  const userID = generateRandomString();
+  const userId = generateRandomString();
   const userEmail = templateVars.email;
   const userPassword = templateVars.password;
-  const user = {id: userID, email: userEmail, password: userPassword};
+  const user = {id: userId, email: userEmail, password: userPassword};
   if (userEmail === "" || userPassword === "") {
     res.status(400).send("<h1>400</h1><h2>Please enter username or password</h2>");
-  } else if (!checkEmail(userEmail, users)) {
+  } else if (!checkUser(userEmail, users, "email")) {
     res.status(400).send("<h1>400</h1><h2>Email already registered</h2>");
   } else {
-    users[userID] = user;
+    users[userId] = user;
     console.log(users);
-    res.cookie('user_id', userID);
+    res.cookie('user_id', userId);
     res.redirect("/urls");
   }
 });
@@ -147,7 +155,19 @@ app.post("/registration", (req, res) => {
 // Endpoint to handle a POST to /login
 // Stores the client's username in the cookie
 app.post("/login", (req, res) => {
-
+  console.log(req.body);
+  const templateVars = req.body;
+  const email = templateVars.email;
+  const password = templateVars.password;
+  if (email === "" || password === "") {
+    res.status(400).send("<h1>400</h1><h2>Please enter username or password</h2>");
+  } else if (!checkUser(email, users, "email") && checkUser(password, users, "password")) {
+    res.status(403).send("<h1>403</h1><h2>Password incorrect</h2>");
+  } else if (checkUser(email, users, "email")) {
+    res.status(403).send("<h1>403</h1><h2>Email not found</h2>");
+  }
+  const userId = checkId(email, users);
+  res.cookie('user_id', userId);
   res.redirect(`/urls`);
 });
 
