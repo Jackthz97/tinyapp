@@ -66,22 +66,28 @@ app.get("/", (req, res) => {
 // Route to My URLs page
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase, user: req.cookies["user_id"], users, checker: false };
+  if (!templateVars.user) {
+    res.redirect("/login");
+  }
   res.render("urls_index", templateVars);
 });
 
 // Route to the forms page
 app.get("/urls/new", (req, res) => {
-  const templateVars = { user: req.cookies["user_id"], users, checker: false };
+  const templateVars = { user: req.cookies["user_id"], users};
+  if (!templateVars.user) {
+    res.redirect("/login");
+  }
   res.render("urls_new", templateVars);
 });
 
 app.get("/registration", (req, res) => {
-  const templateVars = { user: req.cookies["user_id"], users, checker: false};
+  const templateVars = { user: req.cookies["user_id"], users};
   res.render("urls_registration", templateVars);
 });
 
 app.get("/login", (req, res) => {
-  const templateVars = { user: req.cookies["user_id"], users, checker: true};
+  const templateVars = { user: req.cookies["user_id"], users};
   res.render("login" ,templateVars);
 });
 
