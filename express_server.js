@@ -13,6 +13,7 @@ app.listen(PORT, () => {
   console.log(`Example app listening on port: ${PORT}!`);
 });
 
+// No users should see this list unless the userID matches
 const urlDatabase = {
   "b2xVn2": {longURL: "www.lighthouselabs.ca", userID: "aJ48lW"},
   "9sm5xK":  {longURL: "www.google.com", userID: "aJ48lW"}
@@ -40,7 +41,7 @@ const checkUser = function(email, userData, key) {
   return true;
 };
 
-const checkId = function(email, userData)  {
+const urlsForUser = function(email, userData)  {
   for (let id in userData) {
     if (email === userData[id].email) {
       return id;
@@ -70,9 +71,6 @@ app.get("/", (req, res) => {
 // Route to My URLs page
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase, user: req.cookies["user_id"], users};
-  if (!templateVars.user) {
-    res.redirect("/login");
-  }
   res.render("urls_index", templateVars);
 });
 
@@ -85,11 +83,13 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new", templateVars);
 });
 
+// route to the registration page
 app.get("/registration", (req, res) => {
   const templateVars = { user: req.cookies["user_id"], users};
   res.render("urls_registration", templateVars);
 });
 
+// route to the login page
 app.get("/login", (req, res) => {
   const templateVars = { user: req.cookies["user_id"], users};
   res.render("login" ,templateVars);
@@ -97,7 +97,7 @@ app.get("/login", (req, res) => {
 
 // Route to the render information of a single URL in short URL form (key id)
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: req.cookies["user_id"], users};
+  const templateVars = { url: urlDatabase, shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: req.cookies["user_id"], users};
   console.log(templateVars.longURL, urlDatabase);
   res.render("urls_show", templateVars);
 });
@@ -176,7 +176,7 @@ app.post("/login", (req, res) => {
   } else if (checkUser(email, users, "email")) {
     res.status(403).send("<h1>403</h1><h2>Email not found</h2>");
   }
-  const userId = checkId(email, users);
+  const userId = urlsForUser(email, users);
   res.cookie('user_id', userId);
   res.redirect(`/urls`);
 });
