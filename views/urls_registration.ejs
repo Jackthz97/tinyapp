@@ -13,17 +13,18 @@
   <body>
 
     <%- include('partials/_header') %>
+    <h1>Created Account</h1>
 
-    <main style="margin: 1em;">
-      <div style="text-align: center;">
-        <h1 style="margin: 25px; color: red;">Register new account</h1>
       <form method="POST" action="/registration">
-        <input type="email" name="email" placeholder="Username">
-        <input type="password" name="password" placeholder="Password">
-        <button type="submit" class="btn btn-primary">Register</button>
+        <main style="margin: 0.5em;">
+        <label for="fname">Email</label>
+        <div><input type="email" name="email" placeholder="Enter Email"></div>
+
+        <label for="fname">Password</label>
+        <div><input type="password" name="password" placeholder="Enter Password"></div>
+      </main>
+      <button style="margin: 0.5em;" type="submit" class="btn btn-primary">Register</button>
       </form>
-      </div>
-    </main>
       <!-- Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
