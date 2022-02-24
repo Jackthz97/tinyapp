@@ -41,7 +41,7 @@ const checkUser = function(email, userData, key) {
   return true;
 };
 
-const urlsForUser = function(email, userData)  {
+const checkUserId = function(email, userData)  {
   for (let id in userData) {
     if (email === userData[id].email) {
       return id;
@@ -132,6 +132,16 @@ app.post("/urls", (req, res) => {
 
 // Deletes the links and redirect to /urls page
 app.post("/urls/:shortURL/delete", (req, res) => {
+  const user = urlDatabase[req.params.shortURL];
+  // Conditions: if only the owner (creator) of the URL can delete the link
+  if (!req.cookies("user_id")) {
+    res.status(403).send("You are not logged in");
+  } else if (req.cookies["user_id"] !== user.userID) {
+    res.status(403).send("Can't delete this url, it does not belong to you!");
+  } else if (!user) {
+    res.status(403).send("id does not exist");
+  }
+  console.log(urlDatabase[req.params.shortURL]);
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
 });
@@ -176,7 +186,7 @@ app.post("/login", (req, res) => {
   } else if (checkUser(email, users, "email")) {
     res.status(403).send("<h1>403</h1><h2>Email not found</h2>");
   }
-  const userId = urlsForUser(email, users);
+  const userId = checkUserId(email, users);
   res.cookie('user_id', userId);
   res.redirect(`/urls`);
 });
