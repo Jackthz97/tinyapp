@@ -10,6 +10,7 @@
    <%- include('partials/_header') %>
   <div class="card text-center">
       <div class="card-header"></div>
+      <% if (user && user === url[shortURL].userID) {%>
       <div class="card-body">
         <h5 class="card-title">TinyURL for: <%= longURL %></h5>
         <p class="card-text">Short URL: <a href="http://<%= longURL %>"><%= shortURL %></a></p>
@@ -25,6 +26,12 @@
           </form>
         </div>
       </div>
+      <%} else if(user && user !== url[shortURL].userID) {%>
+        <a>Hmmm... seems like this short url does not belong to you</a>
+      <%} else {%>
+          <a>Ooops you're not suppose to be here :( </a>
+          <a>Please login or register first!</a>
+        <%}%>
   </div>
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
