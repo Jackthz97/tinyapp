@@ -3,6 +3,7 @@ const express  = require("express");
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
+const {checkEmail, checkUserId, generateRandomString} = require('./helperFunctions');
 const app = express();
 const PORT = 8080; // default port
 
@@ -40,36 +41,6 @@ const users = {
     email: "user2@example.com",
     password: exHashedPassword2 //1234
   }
-};
-
-//-------------------------------------------------------------------------------------------------------
-// Helper functions
-
-const checkEmail = function(email, userData) {
-  for (let userId in userData) {
-    if (email === userData[userId].email) {
-      return true;
-    }
-  }
-  return false;
-};
-
-const checkUserId = function(email, userData)  {
-  for (let id in userData) {
-    if (email === userData[id].email) {
-      return id;
-    }
-  }
-};
-
-// Random string generator
-const generateRandomString = () => {
-  const string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-  const arr = [];
-  for (let i = 0; i < 6; i++) {
-    arr.push(string[Math.floor(Math.random() * 62)]);
-  }
-  return arr.join("");
 };
 
 //-------------------------------------------------------------------------------------------------------
