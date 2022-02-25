@@ -66,11 +66,9 @@ app.get("/urls", (req, res) => {
 
 // POST endpoint to create new urls
 app.post("/urls", (req, res) => {
-  // console.log(req.body);  // Log the POST request body to the console
   const shortURL = generateRandomString();
   const userId = req.session.userID;
   urlDatabase[shortURL] = {longURL: req.body.longURL, userID: userId};
-  // console.log(urlDatabase);
   res.redirect(`/urls/${shortURL}`);
 });
 
@@ -109,7 +107,6 @@ app.post("/registration", (req, res) => {
     return res.status(400).send("<h1>400</h1><h2>Email already registered</h2>");
   } else {
     users[userId] = user;
-    // console.log(users);
     req.session.userID = userId;
     res.redirect("/urls");
   }
@@ -149,7 +146,6 @@ app.post("/login", (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
   const userId = req.session.userID;
   const templateVars = { url: urlDatabase, shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: userId, users};
-  // console.log(templateVars.longURL, urlDatabase);
   res.render("urls_show", templateVars);
 });
 
