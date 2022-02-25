@@ -104,7 +104,7 @@ app.post("/registration", (req, res) => {
   const userHashedPassword = bcrypt.hashSync(userPassword, 10);
   const user = {id: userId, email: userEmail, password: userHashedPassword};
   if (userEmail === "" || userPassword === "") {
-    return res.status(400).send("<h1>400</h1><h2>Please enter username or passwor</h2>");
+    return res.status(400).send("<h1>400</h1><h2>Please enter username or password</h2>");
   } else if (checkEmail(userEmail, users)) {
     return res.status(400).send("<h1>400</h1><h2>Email already registered</h2>");
   } else {
