@@ -10,6 +10,10 @@
   </head>
   <body>
     <%- include('partials/_header') %>
+    <%if (!user) {%>
+      <h3 style="text-align: center;">Welcome to TinyApp</h3>
+      <h1 style="text-align: center;">Please login or register first!</h1>
+    <%} else {%>
     <main style="margin: 1em;">
       <h3>My URLs</h3>
       <table class="table">
@@ -42,12 +46,7 @@
           <% } %>
         </tbody>
       </table>
-      <%if (!user) {%>
-        <div style="text-align: center;">
-          <h1>To see saved URL lists or to creat new short URLs</h1>
-          <h1>please log in or register first!</h1>
-        </div>
-      <%}%>
+<%}%>
     </main>
     <!-- Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
