@@ -14,6 +14,7 @@ const checkUserId = function(email, userData)  {
       return id;
     }
   }
+  return undefined;
 };
 
 // Random string generator
