@@ -4,26 +4,26 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Final Product
 
-`The urls page when the user is not logged in`
-![](https://github.com/Jackthz97/tinyapp/blob/main/docs/urls-page-not-logged-in.png)
+`Screenshot of urls page when the user is not logged in`
+![""](https://github.com/Jackthz97/tinyapp/blob/main/docs/urls-page-not-logged-in.png)
 
-`This is the registration page`
-![](https://github.com/Jackthz97/tinyapp/blob/main/docs/Registration-page.png)
+`Screenshot of the registration page`
+![""](https://github.com/Jackthz97/tinyapp/blob/main/docs/Registration-page.png)
 
-`This is the login page`
-![](https://github.com/Jackthz97/tinyapp/blob/main/docs/Login-page.png)
+`Screenshot of the login page`
+![""](https://github.com/Jackthz97/tinyapp/blob/main/docs/Login-page.png)
 
-`Create url page where user can create short urls by providing a long url`
-![](https://github.com/Jackthz97/tinyapp/blob/main/docs/create-new-url-page.png)
+`Screenshot of create url page`
+![""](https://github.com/Jackthz97/tinyapp/blob/main/docs/create-new-url-page.png)
 
-`This is the edit url page where user can edit the long url`
-![](https://github.com/Jackthz97/tinyapp/blob/main/docs/edit-url-page.png)
+`Screenshot of edit url`
+![""](https://github.com/Jackthz97/tinyapp/blob/main/docs/edit-url-page.png)
 
-`Example of a logged in user`
-![](https://github.com/Jackthz97/tinyapp/blob/main/docs/urls-page-user1.png)
+`Screenshot of example user 1`
+![""](https://github.com/Jackthz97/tinyapp/blob/main/docs/urls-page-user1.png)
 
-`Example of a second user`
-![](https://github.com/Jackthz97/tinyapp/blob/main/docs/urls-page-user2.png)
+`Screenshot of example user 2`
+![""](https://github.com/Jackthz97/tinyapp/blob/main/docs/urls-page-user2.png)
 
 ## Dependencies
 
