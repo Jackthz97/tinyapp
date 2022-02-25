@@ -52,7 +52,7 @@ app.get("/", (req, res) => {
   if (!templateVars.user) {
     res.redirect("/login");
   }
-  res.send("Hello!");
+  res.redirect('/urls');
 });
 
 //-------------------------------------------------------------------------------------------------------
@@ -132,8 +132,7 @@ app.post("/login", (req, res) => {
   const password = templateVars.password;
   const userKey = checkUserId(email, users);
   if (email === "" || password === "") {
-
-    return;
+    return res.status(403).send("<h1>403</h1><h2>Please enter username or password</h2>");
   } else if (checkEmail(email, users) && !bcrypt.compareSync(password, users[userKey].password)) {
     return res.status(403).send("<h1>403</h1><h2>Password incorrect</h2>");
   } else if (!checkEmail(email, users)) {
