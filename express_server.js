@@ -1,6 +1,7 @@
 const express  = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcryptjs');
 const app = express();
 const PORT = 8080; // default port
 
@@ -15,30 +16,33 @@ app.listen(PORT, () => {
 
 // No users should see this list unless the userID matches
 const urlDatabase = {
-  "b2xVn2": {longURL: "www.lighthouselabs.ca", userID: "aJ48lW"},
-  "9sm5xK":  {longURL: "www.google.com", userID: "aJ48lW"}
+  "b2xVn2": {longURL: "www.lighthouselabs.ca", userID: "userRandomID"},
+  "9sm5xK":  {longURL: "www.google.com", userID: "user2RandomID"}
 };
 
+// Some hashed passwords for the 2 default example users
+const exHashedPassword1 = bcrypt.hashSync("123", 10);
+const exHashedPassword2 = bcrypt.hashSync("1234", 10);
 const users = {
   "userRandomID": {
     id: "userRandomID",
     email: "user@example.com",
-    password: "1234"
+    password: exHashedPassword1 //123
   },
   "user2RandomID": {
     id: "user2RandomID",
     email: "user2@example.com",
-    password: "1234"
+    password: exHashedPassword2 //1234
   }
 };
 
-const checkUser = function(email, userData, key) {
+const checkEmail = function(email, userData) {
   for (let userId in userData) {
-    if (email === userData[userId][key]) {
-      return false;
+    if (email === userData[userId].email) {
+      return true;
     }
   }
-  return true;
+  return false;
 };
 
 const checkUserId = function(email, userData)  {
@@ -132,16 +136,6 @@ app.post("/urls", (req, res) => {
 
 // Deletes the links and redirect to /urls page
 app.post("/urls/:shortURL/delete", (req, res) => {
-  const user = urlDatabase[req.params.shortURL];
-  // Conditions: if only the owner (creator) of the URL can delete the link
-  if (!req.cookies("user_id")) {
-    res.status(403).send("You are not logged in");
-  } else if (req.cookies["user_id"] !== user.userID) {
-    res.status(403).send("Can't delete this url, it does not belong to you!");
-  } else if (!user) {
-    res.status(403).send("id does not exist");
-  }
-  console.log(urlDatabase[req.params.shortURL]);
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
 });
@@ -159,10 +153,11 @@ app.post("/registration", (req, res) => {
   const userId = generateRandomString();
   const userEmail = templateVars.email;
   const userPassword = templateVars.password;
-  const user = {id: userId, email: userEmail, password: userPassword};
+  const userHashedPassword = bcrypt.hashSync(userPassword, 10);
+  const user = {id: userId, email: userEmail, password: userHashedPassword};
   if (userEmail === "" || userPassword === "") {
     res.status(400).send("<h1>400</h1><h2>Please enter username or password</h2>");
-  } else if (!checkUser(userEmail, users, "email")) {
+  } else if (checkEmail(userEmail, users)) {
     res.status(400).send("<h1>400</h1><h2>Email already registered</h2>");
   } else {
     users[userId] = user;
@@ -179,11 +174,12 @@ app.post("/login", (req, res) => {
   const templateVars = req.body;
   const email = templateVars.email;
   const password = templateVars.password;
+  const hashedPassword = bcrypt.hashSync(password, 10);
   if (email === "" || password === "") {
     res.status(400).send("<h1>400</h1><h2>Please enter username or password</h2>");
-  } else if (!checkUser(email, users, "email") && checkUser(password, users, "password")) {
+  } else if (checkEmail(email, users) && !bcrypt.compareSync(password, hashedPassword)) {
     res.status(403).send("<h1>403</h1><h2>Password incorrect</h2>");
-  } else if (checkUser(email, users, "email")) {
+  } else if (!checkEmail(email, users)) {
     res.status(403).send("<h1>403</h1><h2>Email not found</h2>");
   }
   const userId = checkUserId(email, users);
